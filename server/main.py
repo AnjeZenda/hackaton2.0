@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from io import BytesIO
 import base64
 import matplotlib.pyplot as plt, matplotlib
@@ -9,6 +10,16 @@ import numpy as np
 
 matplotlib.use('agg')
 app = FastAPI()
+
+origins = ['*']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class HeaderElement(BaseModel):
     name: str
@@ -29,7 +40,9 @@ def render_data_string(string: str):
     return string
 
 
-
+@app.get('/')
+def hello():
+    return {'hello': 'world'}
 
 @app.post('/api/linePlot')
 def test(data: Data):
